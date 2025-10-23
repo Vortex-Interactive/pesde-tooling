@@ -97,7 +97,7 @@ local function stripLeadingVersion(version: string): string
 end
 
 local function stripToolchainlibRev(version: string)
-	version = version:gsub("[%.|%-]?(toolchainlib|tcl)%.%d+", ""):gsub("%+$", "")
+	version = version:gsub("[%.%-]?toolchainlib%.%d+", ""):gsub("[%.%-]?tcl%.%d+", ""):gsub("%+$", "")
 
 	return version
 end
@@ -280,12 +280,12 @@ function installTool(tool: ToolId, installPath: pathfs.Path): nil
 	local assets = tool.version:match({
 		Some = function(version: string)
 			for _, release in releases do
-				if stripLeadingVersion(release.tag_name) == stripLeadingVersion(version) then
+				if stripLeadingVersion(release.tag_name) == stripLeadingVersion(stripToolchainlibRev(version)) then
 					return release.assets
 				end
 			end
 
-			return error(`No release found for version {version}`)
+			return error(`No release found for version {stripToolchainlibRev(version)}`)
 		end,
 
 		None = function()

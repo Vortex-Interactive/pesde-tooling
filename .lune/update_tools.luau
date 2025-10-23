@@ -45,7 +45,7 @@ local function stripLeadingVersion(version: string): string
 end
 
 local function stripToolchainlibRev(version: string)
-	version = version:gsub("[%.|%-]?(toolchainlib|tcl)%.%d+", ""):gsub("%+$", "")
+	version = version:gsub("[%.%-]?toolchainlib%.%d+", ""):gsub("[%.%-]?tcl%.%d+", ""):gsub("%+$", "")
 
 	return version
 end
