@@ -68,9 +68,10 @@ local function downloadAndExtractBinary(
 					return error(`Failed to download asset {asset.name}: HTTP Code {contentsResp.statusCode}`)
 				end
 
-				return ResultExt.ok(
-					compression.extractBinary[format](buffer.fromstring(contentsResp.body), binaryName, targetPlatform)
-				)
+				local extracted = compression.extractBinary
+					[format](buffer.fromstring(contentsResp.body), binaryName, targetPlatform)
+					:unwrap()
+				return Option.Some(extracted)
 			end) :: Option<buffer>
 end
 
@@ -97,7 +98,7 @@ local function stripLeadingVersion(version: string): string
 end
 
 local function stripToolchainlibRev(version: string)
-	version = version:gsub("[%.%-]?toolchainlib%.%d+", ""):gsub("[%.%-]?tcl%.%d+", ""):gsub("%+$", "")
+	version = version:gsub("[%.|%-]?toolchainlib%.%d+", ""):gsub("[%.|%-]?tcl%.%d+", ""):gsub("%+$", "")
 
 	return version
 end
